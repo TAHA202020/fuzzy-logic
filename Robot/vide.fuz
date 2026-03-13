@@ -1,16 +1,53 @@
+// ----------------------------------------------------------------------------
+// File       : regleRobot0.fuz
+// Description: TP Controle flou - Robot : 1er essai
+// ----------------------------------------------------------------------------
+
 configuration
 {
- et := min;   // Pourquoi pas, c'est bidon...
- ou := max;   // Pourquoi pas, c'est bidon...
+	et := min;
+	ou := max;
+	decodage := centre;
+	implication := larsen;
+	ainsi_que := max;
 }
 
 linguistique
 {
- bidonI := triangle(-1.0,0.0,1.0);
- bidonS := triangle(-1.0,0.0,1.0);
+	// Valeurs linguistiques de la variable linguistique DistGoal
+
+	// Valeurs linguistiques de la variable linguistique DirecGoal
+        onRight := rampe_bas(-90.0,0);
+        inFront := triangle(-90.0,0.0,90.0);
+        onLeft  := rampe_haut(0.0,90.0);
+        Loin:=rampe_haut(80,500);
+        Proche:=rampe_bas(80,2700);
+        ProcheObst:=rampe_bas(100,300);
+        // Valeurs linguistiques de la variable linguistique Slin
+
+        // Valeurs linguistiques de la variable linguistique Sang
+        turnRight  := triangle(-200.0,-100.0,0.0);
+        straightOn := triangle(-100.0,0,100.0);
+        turnLeft   := triangle(0.0,100.0,200.0);
+        Rapide := triangle(50,150,250);
+        Long := triangle(-30,10,50);
 }
+
 
 regles
 {
- si InSlin est bidonI alors Slin est bidonS;
+        // Reach the goal but ignore the obstacles
+
+        si DirecGoal est inFront alors Sang est straightOn;
+        si DirecGoal est onLeft  alors Sang est turnLeft;
+        si DirecGoal est onRight alors Sang est turnRight;
+
+        si DistGoal est Loin alors Slin est Rapide;
+        si DistGoal est Proche alors Slin est Long ;
+        si ObstFront est ProcheObst alors Sang est turnLeft;
+        si ObstFront est ProcheObst alors Slin est Long;
+        si ObstRight est ProcheObst alors Sang est turnLeft;
+        si ObstLeft est ProcheObst alors Sang est turnRight;
+
 }
+// ---End-Of-File-------------------------------------------------------------
